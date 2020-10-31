@@ -4,7 +4,7 @@ import { Server, IncomingMessage, ServerResponse } from 'http';
 type FastifyServerApp = FastifyInstance<Server, IncomingMessage, ServerResponse>;
 
 class FastifyHttpServer {
-  private readonly _serverInstance: FastifyServerApp;
+  private _serverInstance: FastifyServerApp;
   private readonly opts: RouteShorthandOptions = {
     schema: {
       response: {
@@ -26,6 +26,10 @@ class FastifyHttpServer {
     });
   }
 
+  public get server(): Server {
+    return this._serverInstance.server;
+  }
+  
   private setRouter() {
     this._serverInstance.get('/ping', this.opts, (request, reply) => {
       reply.code(200).send({ pong: 'it worked!' });
