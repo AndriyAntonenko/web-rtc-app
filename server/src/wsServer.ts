@@ -2,10 +2,10 @@ import { Server as HttpServer } from 'http';
 import WebSocket, { Server, Data } from 'ws';
 
 class WsServer {
-  private readonly wss: Server;
+  private readonly _wss: Server;
 
   constructor(httpServer: HttpServer) {
-    this.wss = new Server({ server: httpServer });
+    this._wss = new Server({ server: httpServer });
   }
 
   private handleOnMessage(ws: WebSocket) {
@@ -15,7 +15,7 @@ class WsServer {
   }
 
   connection() {
-    this.wss.on('connection', ws => {
+    this._wss.on('connection', ws => {
       this.handleOnMessage(ws);
     });
   }
