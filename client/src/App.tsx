@@ -36,7 +36,11 @@ function App() {
 
     wsService.addOnErrorHandler(() => {
       console.error('Error!!!');
-    })
+    });
+
+    wsService.addOnMessageHandler((data) => {
+      console.dir(data);
+    });
   }, []);
 
   return (
