@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Video } from './component/Video';
+import { UserList } from './component/UserList';
 
 import { MediaDevicesService } from './services/MediaDeviceService';
 import { CameraService } from './services/CameraService';
@@ -10,6 +11,7 @@ import './App.css';
 
 function App() {
   const [videoStream, setVideoStream] = React.useState<MediaStream>();
+  const [wsService, setWsService] = React.useState<WebSocketService>();
 
   React.useEffect(() => {
     const mediaDeviceService = new MediaDevicesService();
@@ -25,27 +27,26 @@ function App() {
   React.useEffect(() => {
     const wsService = new WebSocketService('ws://localhost:5000');
 
-    wsService.addOnOpenHandler(() => {
+    wsService.ws.addEventListener('open', () => {
       console.info('Open!!!');
       wsService.sendMessage('Hello!');
+      setWsService(wsService);
     });
 
-    wsService.addOnCloseHandler(() => {
+    wsService.ws.addEventListener('close', () => {
       console.info('Closed!!!');
     });
 
-    wsService.addOnErrorHandler(() => {
+    wsService.ws.addEventListener('error', () => {
       console.error('Error!!!');
-    });
-
-    wsService.addOnMessageHandler((data) => {
-      console.dir(data);
     });
   }, []);
 
   return (
     <div className="App">
       {videoStream && <Video stream={videoStream} />}
+      <br />
+      {wsService && <UserList wsService={wsService} />}
     </div>
   );
 }

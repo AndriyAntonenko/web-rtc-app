@@ -54,7 +54,7 @@ class WsServer {
 
       this.broadcast(ws, {
         event: SocketEventTypes.UPDATE_USERS_LIST,
-        data: [id]
+        data: { id }
       });
     });
   }
