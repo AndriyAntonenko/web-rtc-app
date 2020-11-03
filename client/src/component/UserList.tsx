@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { SocketEventTypes } from '@webrtc_experiment/shared';
 
 import { actions } from '../store/reducers/user';
 import { IGlobalStore } from '../types/interfaces/IGlobalStore';
@@ -14,23 +15,23 @@ interface IUserListProps {
 const UserListComponent: React.FC<IUserListProps> = (props) => {
   const { users, wsService, addUser } = props;
   
-  const handleWsMessage = React.useCallback(
-    (event: MessageEvent) => {
-      addUser(JSON.parse(event.data).data.id);
+  const handleAddUser = React.useCallback(
+    (data: { id: string }) => {
+      addUser(data.id);
     },
     [addUser]
   );
 
   React.useEffect(() => {
-    wsService.ws.addEventListener('message', handleWsMessage);
+    wsService.addOnEventHandler(SocketEventTypes.UPDATE_USERS_LIST, handleAddUser);
     return () => {
-      wsService.ws.removeEventListener('message', handleWsMessage);
+      wsService.removeOnEventHandler(SocketEventTypes.UPDATE_USERS_LIST, handleAddUser);
     }
-  }, [wsService.ws, handleWsMessage]);
+  }, [wsService, handleAddUser]);
 
   return (
     <ul>
-      {users.map(id => <li>{id}</li>)}
+      {users.map(id => <li key={id}>{id}</li>)}
     </ul>
   );
 };

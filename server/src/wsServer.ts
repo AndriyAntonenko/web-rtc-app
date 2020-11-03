@@ -1,9 +1,8 @@
 import { Server as HttpServer } from 'http';
 import WebSocket, { Server, Data } from 'ws';
-import { ISocketMessage } from '@webrtc_experiment/shared';
+import { ISocketMessage, SocketEventTypes } from '@webrtc_experiment/shared';
 
 import { ISocketStorage } from './types/interfaces/ISocketStorage';
-import { SocketEventTypes } from './types/enums/SocketEventTypes';
 
 class WsServer {
   private readonly _wss: Server;

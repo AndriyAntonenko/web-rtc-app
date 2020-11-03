@@ -27,18 +27,10 @@ function App() {
   React.useEffect(() => {
     const wsService = new WebSocketService('ws://localhost:5000');
 
-    wsService.ws.addEventListener('open', () => {
+    wsService.onOpen(() => {
       console.info('Open!!!');
       wsService.sendMessage('Hello!');
       setWsService(wsService);
-    });
-
-    wsService.ws.addEventListener('close', () => {
-      console.info('Closed!!!');
-    });
-
-    wsService.ws.addEventListener('error', () => {
-      console.error('Error!!!');
     });
   }, []);
 
