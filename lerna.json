@@ -1,0 +1,9 @@
+{
+  "npmClient": "npm",
+  "packages": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "version": "independent"
+}

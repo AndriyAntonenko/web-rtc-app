@@ -1,0 +1,24 @@
+{
+  "name": "webrtc_experiment",
+  "version": "1.0.0",
+  "description": "Here is my experiments with webRTC",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bootstrap": "lerna bootstrap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndriyAntonenko/web-rtc-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndriyAntonenko/web-rtc-app/issues"
+  },
+  "homepage": "https://github.com/AndriyAntonenko/web-rtc-app#readme",
+  "dependencies": {
+    "lerna": "^3.22.1"
+  }
+}

@@ -1,8 +1,9 @@
 {
-  "name": "client",
+  "name": "@webrtc_experiment/client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@webrtc_experiment/shared": "^1.0.0",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
