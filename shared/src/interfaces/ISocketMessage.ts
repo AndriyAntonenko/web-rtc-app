@@ -1,4 +1,6 @@
+import { SocketEventTypes } from '../enums/SocketEventTypes';
+
 export interface ISocketMessage<T = object> {
-  event: string;
+  event: SocketEventTypes;
   data: T;
 }
