@@ -9,6 +9,16 @@ class SocketStorage implements ISocketStorage<WebSocket> {
     this._activeSockets = new Map();
   }
 
+  getIds(except?: SocketId[]): SocketId[] {
+    const ids: SocketId[] = [];
+    this._activeSockets.forEach((_, key) => {
+      if (except && !except.includes(key)) {
+        ids.push(key)
+      }
+    });
+    return ids;
+  }
+
   getById(id: SocketId): WebSocket {
     return this._activeSockets.get(id);
   }

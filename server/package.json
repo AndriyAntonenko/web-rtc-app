@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "fastify": "^3.7.0",
+    "fastify-cors": "^4.1.0",
     "uuid": "^8.3.1",
     "ws": "^7.3.1"
   }

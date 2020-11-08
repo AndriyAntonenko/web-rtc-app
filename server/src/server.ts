@@ -1,11 +1,17 @@
+import { Server, IncomingMessage, ServerResponse, request } from 'http';
 import { fastify, FastifyInstance, RouteShorthandOptions } from 'fastify';
-import { Server, IncomingMessage, ServerResponse } from 'http';
+import fastifyCors from 'fastify-cors';
+import WebSocket from 'ws';
+
+import { ISocketStorage } from './types/interfaces/ISocketStorage';
 
 type FastifyServerApp = FastifyInstance<Server, IncomingMessage, ServerResponse>;
 
 class FastifyHttpServer {
+  private _socketStorage: ISocketStorage<WebSocket>;
   private _serverInstance: FastifyServerApp;
-  private readonly opts: RouteShorthandOptions = {
+
+  private readonly pingOptions: RouteShorthandOptions = {
     schema: {
       response: {
         200: {
@@ -20,9 +26,29 @@ class FastifyHttpServer {
     }
   };
 
-  constructor() {
+  private readonly usersOptions: RouteShorthandOptions = {
+    schema: {
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            ids: {
+              type: 'array'
+            }
+          }
+        }
+      }
+    }
+  };
+
+  constructor(socketStorage: ISocketStorage<WebSocket>) {
+    this._socketStorage = socketStorage;
     this._serverInstance = fastify({
       logger: true
+    });
+
+    this._serverInstance.register(fastifyCors, {
+      origin: 'http://localhost:3000'
     });
   }
 
@@ -31,8 +57,12 @@ class FastifyHttpServer {
   }
   
   private setRouter() {
-    this._serverInstance.get('/ping', this.opts, (request, reply) => {
+    this._serverInstance.get('/ping', this.pingOptions, (request, reply) => {
       reply.code(200).send({ pong: 'it worked!' });
+    });
+
+    this._serverInstance.get('/users', this.usersOptions, (request, reply) => {
+      reply.code(200).send({ ids: this._socketStorage.getIds() });
     });
   }
 

@@ -3,8 +3,9 @@ import { WsServer } from './src/wsServer';
 import { SocketStorage } from './src/socketStorage';
 
 (async () => {
-  const server = new FastifyHttpServer();
-  const wss = new WsServer(server.server, new SocketStorage());
+  const socketStorage = new SocketStorage();
+  const server = new FastifyHttpServer(socketStorage);
+  const wss = new WsServer(server.server, socketStorage);
 
   wss.connection();
 

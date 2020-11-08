@@ -29,6 +29,13 @@ const UserListComponent: React.FC<IUserListProps> = (props) => {
     }
   }, [wsService, handleAddUser]);
 
+  React.useEffect(() => {
+    fetch('http://localhost:5000/users', { method: 'GET' })
+      .then(response => response.json())
+      .then(console.info)
+      .catch(console.error);
+  }, []);
+
   return (
     <ul>
       {users.map(id => <li key={id}>{id}</li>)}
