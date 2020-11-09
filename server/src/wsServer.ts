@@ -51,6 +51,11 @@ class WsServer {
       this.handleOnMessage(ws);
       this.handleOnDisconnect(ws);
 
+      this.sendEvent(ws, {
+        event: SocketEventTypes.UPDATE_MY_CONNECTION_DATA,
+        data: { id } 
+      });
+
       this.broadcast(ws, {
         event: SocketEventTypes.UPDATE_USERS_LIST,
         data: { id }

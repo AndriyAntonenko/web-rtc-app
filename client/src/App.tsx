@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { SocketEventTypes, IWebSocketConnectionData } from '@webrtc_experiment/shared';
 
 import { Video } from './component/Video';
 import { UserList } from './component/UserList';
@@ -7,9 +9,15 @@ import { MediaDevicesService } from './services/MediaDeviceService';
 import { CameraService } from './services/CameraService';
 import { WebSocketService } from './services/WebSocketService';
 
+import { actions } from './store/reducers/wsConnection';
+
 import './App.css';
 
-function App() {
+interface IAppProps {
+  addConnectionData: typeof actions.addConnectionData;
+}
+
+function App(props: IAppProps): JSX.Element {
   const [videoStream, setVideoStream] = React.useState<MediaStream>();
   const [wsService, setWsService] = React.useState<WebSocketService>();
 
@@ -31,8 +39,16 @@ function App() {
       console.info('Open!!!');
       wsService.sendMessage('Hello!');
       setWsService(wsService);
+    
+
+      wsService.addOnEventHandler<IWebSocketConnectionData>(
+        SocketEventTypes.UPDATE_MY_CONNECTION_DATA, 
+        async (eventData: IWebSocketConnectionData) => {
+          props.addConnectionData(eventData);
+        }
+      );
     });
-  }, []);
+  }, [props]);
 
   return (
     <div className="App">
@@ -43,4 +59,8 @@ function App() {
   );
 }
 
-export default App;
+const actionCreators: IAppProps = {
+  addConnectionData: actions.addConnectionData
+};
+
+export default connect(null, actionCreators)(App);

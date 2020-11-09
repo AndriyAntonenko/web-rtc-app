@@ -29,18 +29,6 @@ class WebSocketService {
     this._eventHandlersMap.set(eventType, newHandlers);
   }
 
-  onMessage() {
-    this._ws.addEventListener('message', (message: MessageEvent<string>) => {
-      const payload: ISocketMessage = JSON.parse(message.data);
-      const handlers = this._eventHandlersMap.get(payload.event);
-      if (handlers) {
-        handlers.forEach(handler => {
-          handler(payload.data);
-        });
-      }
-    });
-  }
-
   onOpen(handler: Handler) {
     this._ws.addEventListener('open', async () => {
       await handler();
@@ -50,6 +38,18 @@ class WebSocketService {
 
   sendMessage(message: any) {
     this._ws.send(message);
+  }
+
+  private onMessage() {
+    this._ws.addEventListener('message', (message: MessageEvent<string>) => {
+      const payload: ISocketMessage = JSON.parse(message.data);
+      const handlers = this._eventHandlersMap.get(payload.event);
+      if (handlers) {
+        handlers.forEach(handler => {
+          handler(payload.data);
+        });
+      }
+    });
   }
 }
 
