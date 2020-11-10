@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SocketEventTypes } from '@webrtc_experiment/shared';
+import { SocketEventTypes, IWebSocketConnectionData } from '@webrtc_experiment/shared';
 
 import { actions } from '../store/reducers/user';
 import { IGlobalStore } from '../types/interfaces/IGlobalStore';
@@ -8,16 +8,17 @@ import { WebSocketService } from '../services/WebSocketService';
 
 interface IUserListProps {
   users: string[];
+  wsConnectionData: Partial<IWebSocketConnectionData>;
   wsService: WebSocketService;
   addUser: typeof actions.addUser
 }
 
 const UserListComponent: React.FC<IUserListProps> = (props) => {
-  const { users, wsService, addUser } = props;
+  const { users, wsService, addUser, wsConnectionData } = props;
   
   const handleAddUser = React.useCallback(
     (data: { id: string }) => {
-      addUser(data.id);
+      addUser([data.id]);
     },
     [addUser]
   );
@@ -30,11 +31,13 @@ const UserListComponent: React.FC<IUserListProps> = (props) => {
   }, [wsService, handleAddUser]);
 
   React.useEffect(() => {
-    fetch('http://localhost:5000/users', { method: 'GET' })
-      .then(response => response.json())
-      .then(console.info)
-      .catch(console.error);
-  }, []);
+    if (wsConnectionData.id) {
+      fetch(`http://localhost:5000/users?except=["${wsConnectionData.id}"]`, { method: 'GET' })
+        .then(response => response.json())
+        .then(({ ids }) => { addUser(ids); })
+        .catch(console.error);
+    }
+  }, [wsConnectionData, addUser]);
 
   return (
     <ul>
@@ -44,7 +47,8 @@ const UserListComponent: React.FC<IUserListProps> = (props) => {
 };
 
 const mapStateToProps = (store: IGlobalStore) => ({
-  users: store.users
+  users: store.users,
+  wsConnectionData: store.wsConnectionData
 });
 
 const actionCreators = {

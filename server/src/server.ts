@@ -62,7 +62,7 @@ class FastifyHttpServer {
     });
 
     this._serverInstance.get('/users', this.usersOptions, (request, reply) => {
-      reply.code(200).send({ ids: this._socketStorage.getIds() });
+      reply.code(200).send({ ids: this._socketStorage.getIds(JSON.parse((request.query as any).except)) });
     });
   }
 
