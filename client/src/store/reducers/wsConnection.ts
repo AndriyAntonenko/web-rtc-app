@@ -7,6 +7,9 @@ const wsConnectionSlice = createSlice({
   reducers: {
     addConnectionData: (state, action) => {
       return action.payload
+    },
+    deleteConnectionData: () => {
+      return {};
     }
   }
 });

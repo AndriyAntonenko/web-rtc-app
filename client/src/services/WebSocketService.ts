@@ -36,6 +36,10 @@ class WebSocketService {
     });
   }
 
+  onClose(handler: Handler) {
+    this._ws.addEventListener('close', handler);
+  }
+
   sendMessage(message: any) {
     this._ws.send(message);
   }

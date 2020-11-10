@@ -22,7 +22,8 @@ class WsServer {
   private handleOnDisconnect(ws: WebSocket) {
     ws.on('close', () => {
       console.info('disconnected...');
-      this._socketStorage.deleteSocket(ws);
+      const id = this._socketStorage.deleteSocket(ws);
+      this.broadcast(ws, { event: SocketEventTypes.USER_LEAVE_ROOM, data: { id } });
     });
   }
 
@@ -57,7 +58,7 @@ class WsServer {
       });
 
       this.broadcast(ws, {
-        event: SocketEventTypes.UPDATE_USERS_LIST,
+        event: SocketEventTypes.USER_JOIN_TO_ROOM,
         data: { id }
       });
     });

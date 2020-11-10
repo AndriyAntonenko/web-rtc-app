@@ -15,6 +15,7 @@ import './App.css';
 
 interface IAppProps {
   addConnectionData: typeof actions.addConnectionData;
+  deleteConnectionData: typeof actions.deleteConnectionData;
 }
 
 function App(props: IAppProps): JSX.Element {
@@ -47,6 +48,10 @@ function App(props: IAppProps): JSX.Element {
           props.addConnectionData(eventData);
         }
       );
+
+      wsService.onClose(() => {
+        actions.deleteConnectionData();
+      });
     });
   }, [props]);
 
@@ -60,7 +65,8 @@ function App(props: IAppProps): JSX.Element {
 }
 
 const actionCreators: IAppProps = {
-  addConnectionData: actions.addConnectionData
+  addConnectionData: actions.addConnectionData,
+  deleteConnectionData: actions.deleteConnectionData
 };
 
 export default connect(null, actionCreators)(App);

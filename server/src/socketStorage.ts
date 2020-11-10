@@ -33,7 +33,7 @@ class SocketStorage implements ISocketStorage<WebSocket> {
     this._activeSockets.delete(id);
   }
 
-  deleteSocket(socket: WebSocket): void {
+  deleteSocket(socket: WebSocket): SocketId {
     let id: SocketId;
     
     for (let [activeSocketId, activeSocket] of this._activeSockets) {
@@ -44,6 +44,7 @@ class SocketStorage implements ISocketStorage<WebSocket> {
     }
 
     this._activeSockets.delete(id);
+    return id;
   }
 }
 

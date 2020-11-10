@@ -10,25 +10,36 @@ interface IUserListProps {
   users: string[];
   wsConnectionData: Partial<IWebSocketConnectionData>;
   wsService: WebSocketService;
-  addUser: typeof actions.addUser
+  addUser: typeof actions.addUser;
+  deleteUser: typeof actions.deleteUser;
 }
 
 const UserListComponent: React.FC<IUserListProps> = (props) => {
-  const { users, wsService, addUser, wsConnectionData } = props;
+  const { users, wsService, addUser, wsConnectionData, deleteUser } = props;
   
-  const handleAddUser = React.useCallback(
+  const handleUserJoinRoom = React.useCallback(
     (data: { id: string }) => {
       addUser([data.id]);
     },
     [addUser]
   );
 
+  const handleUserLeaveRoom = React.useCallback(
+    (data: { id: string }) => {
+      deleteUser(data);
+    },
+    [deleteUser]
+  )
+
   React.useEffect(() => {
-    wsService.addOnEventHandler(SocketEventTypes.UPDATE_USERS_LIST, handleAddUser);
+    wsService.addOnEventHandler(SocketEventTypes.USER_JOIN_TO_ROOM, handleUserJoinRoom);
+
+    wsService.addOnEventHandler(SocketEventTypes.USER_LEAVE_ROOM, handleUserLeaveRoom);
+
     return () => {
-      wsService.removeOnEventHandler(SocketEventTypes.UPDATE_USERS_LIST, handleAddUser);
+      wsService.removeOnEventHandler(SocketEventTypes.USER_JOIN_TO_ROOM, handleUserJoinRoom);
     }
-  }, [wsService, handleAddUser]);
+  }, [wsService, handleUserJoinRoom, handleUserLeaveRoom]);
 
   React.useEffect(() => {
     if (wsConnectionData.id) {
@@ -52,7 +63,8 @@ const mapStateToProps = (store: IGlobalStore) => ({
 });
 
 const actionCreators = {
-  addUser: actions.addUser
+  addUser: actions.addUser,
+  deleteUser: actions.deleteUser
 };
 
 const ConnectedUserList = connect(mapStateToProps, actionCreators)(UserListComponent);

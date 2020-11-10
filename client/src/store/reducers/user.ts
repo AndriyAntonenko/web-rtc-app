@@ -6,6 +6,10 @@ const userSlice = createSlice({
   reducers: {
     addUser: (state, action) => {
       return [...state, ...action.payload]
+    },
+    deleteUser: (state, action) => {
+      console.info(action)
+      return state.filter(userId => userId !== action.payload.id);
     }
   }
 });
