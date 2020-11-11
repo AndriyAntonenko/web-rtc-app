@@ -1,0 +1,14 @@
+.userList {
+  width: 100%;
+  padding-left: 0;
+}
+
+.userListItem {
+  list-style: none;
+  background: burlywood;
+  border: 1px solid antiquewhite;
+  color: black;
+  text-align: left;
+  padding: 1rem;
+  cursor: pointer;
+}

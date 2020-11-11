@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { SocketEventTypes, IWebSocketConnectionData } from '@webrtc_experiment/shared';
 
-import { actions } from '../store/reducers/user';
-import { IGlobalStore } from '../types/interfaces/IGlobalStore';
-import { WebSocketService } from '../services/WebSocketService';
+import { actions } from '../../store/reducers/user';
+import { IGlobalStore } from '../../types/interfaces/IGlobalStore';
+import { WebSocketService } from '../../services/WebSocketService';
+
+import styles from './styles.module.css';
 
 interface IUserListProps {
   users: string[];
@@ -51,8 +53,8 @@ const UserListComponent: React.FC<IUserListProps> = (props) => {
   }, [wsConnectionData, addUser]);
 
   return (
-    <ul>
-      {users.map(id => <li key={id}>{id}</li>)}
+    <ul className={styles.userList}>
+      {users.map(id => <li className={`${styles.userListItem} ${styles.userListItemOnHover}`} key={id}>{id}</li>)}
     </ul>
   );
 };
