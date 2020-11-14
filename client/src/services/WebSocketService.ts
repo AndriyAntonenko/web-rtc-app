@@ -19,6 +19,10 @@ class WebSocketService {
     this._eventHandlersMap.get(eventType)?.push(handler);
   }
 
+  once<T>(eventType: SocketEventTypes, handler: EventHandler<T>) {
+    this._eventHandlersMap.set(eventType, [handler]);
+  }
+
   removeOnEventHandler<T>(eventType: SocketEventTypes, handlerToRemove: EventHandler<T>) {
     const handlers = this._eventHandlersMap.get(eventType);
     if (!handlers) {
@@ -40,8 +44,11 @@ class WebSocketService {
     this._ws.addEventListener('close', handler);
   }
 
-  sendMessage(message: any) {
-    this._ws.send(message);
+  sendMessage<T = any>(message: ISocketMessage<T> | string) {
+    this._ws.send(typeof message === 'string'
+      ? message
+      : JSON.stringify(message)
+    );
   }
 
   private onMessage() {

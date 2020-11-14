@@ -14,10 +14,11 @@ interface IUserListProps {
   wsService: WebSocketService;
   addUser: typeof actions.addUser;
   deleteUser: typeof actions.deleteUser;
+  onUserClick: (userId: string) => void | Promise<void>;
 }
 
 const UserListComponent: React.FC<IUserListProps> = (props) => {
-  const { users, wsService, addUser, wsConnectionData, deleteUser } = props;
+  const { users, wsService, addUser, wsConnectionData, deleteUser, onUserClick } = props;
   
   const handleUserJoinRoom = React.useCallback(
     (data: { id: string }) => {
@@ -54,7 +55,15 @@ const UserListComponent: React.FC<IUserListProps> = (props) => {
 
   return (
     <ul className={styles.userList}>
-      {users.map(id => <li className={`${styles.userListItem} ${styles.userListItemOnHover}`} key={id}>{id}</li>)}
+      {users.map(id => (
+        <li 
+          className={`${styles.userListItem} ${styles.userListItemOnHover}`} 
+          key={id}
+          onClick={() => onUserClick(id)}
+        >
+          {id}
+        </li>
+      ))}
     </ul>
   );
 };

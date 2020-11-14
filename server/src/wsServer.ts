@@ -1,6 +1,13 @@
 import { Server as HttpServer } from 'http';
 import WebSocket, { Server, Data } from 'ws';
-import { ISocketMessage, SocketEventTypes } from '@webrtc_experiment/shared';
+import { 
+  ISocketMessage, 
+  SocketEventTypes, 
+  ICallUserOffer, 
+  ICallMadeUserOffer,
+  IMakeAnswer,
+  IAnswerMade
+} from '@webrtc_experiment/shared';
 
 import { ISocketStorage } from './types/interfaces/ISocketStorage';
 
@@ -15,7 +22,32 @@ class WsServer {
 
   private handleOnMessage(ws: WebSocket) {
     ws.on('message', (message: Data) => {
-      console.info(message);
+      try {
+        const messageObject: ISocketMessage = JSON.parse(typeof message === 'string' 
+          ? message
+          : message.toString()
+        );
+
+        if (messageObject.event === SocketEventTypes.CALL_USER) {
+          const { data: { to, from, offer } } = messageObject as ISocketMessage<ICallUserOffer>;
+
+          this.sendToSocketById<ICallMadeUserOffer>(to, {
+            event: SocketEventTypes.CALL_MADE,
+            data: { offer, userId: from }
+          });
+        }
+
+        if (messageObject.event === SocketEventTypes.MAKE_ANSWER) {
+          const { data: { to, from, answer } } = messageObject as ISocketMessage<IMakeAnswer>;
+          
+          this.sendToSocketById<IAnswerMade>(to, { 
+            event: SocketEventTypes.ANSWER_MADE,
+            data: { answer, userId: from }
+          });
+        }
+      } catch (error) {
+        console.info(message);
+      }
     });
   }
 
@@ -27,7 +59,7 @@ class WsServer {
     });
   }
 
-  private sendEvent(ws: WebSocket, message: ISocketMessage) {
+  private sendEvent<T>(ws: WebSocket, message: ISocketMessage<T>) {
     ws.send(JSON.stringify(message));
   }
 
@@ -39,7 +71,7 @@ class WsServer {
     });
   }
 
-  private sendToSocketById(id: string, message: ISocketMessage) {
+  private sendToSocketById<T>(id: string, message: ISocketMessage<T>) {
     const ws = this._socketStorage.getById(id);
     if (ws) {
       this.sendEvent(ws, message);
